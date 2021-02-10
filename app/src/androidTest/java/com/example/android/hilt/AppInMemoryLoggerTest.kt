@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.example.android.hilt.data.LoggerDataSource
 import com.example.android.hilt.di.DatabaseLogger
+import com.example.android.hilt.di.InMemoryLogger
 import com.example.android.hilt.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -40,24 +41,14 @@ import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class AppTest {
+class AppInMemoryLoggerTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
-    @DatabaseLogger
-    @Inject
-    lateinit var loggerDataSource: LoggerDataSource
-
     @Before
     fun init() {
         hiltRule.inject()
-        loggerDataSource.removeLogs()
-    }
-
-    @After
-    fun tearDown() {
-        loggerDataSource.removeLogs()
     }
 
     @Test
