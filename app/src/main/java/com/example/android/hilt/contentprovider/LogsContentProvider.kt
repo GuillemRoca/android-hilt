@@ -1,12 +1,13 @@
 package com.example.android.hilt.contentprovider
 
-import android.content.ContentProvider
-import android.content.ContentUris
-import android.content.ContentValues
-import android.content.UriMatcher
+import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import com.example.android.hilt.data.LogDao
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.android.components.ApplicationComponent
 
 
 /** The table name to retrieve the stored info.  */
@@ -24,7 +25,13 @@ private const val CODE_LOGS_ITEM = 2
 /**
  * A ContentProvider that exposes the logs outside the application process.
  */
-class LogsContentProvider: ContentProvider() {
+class LogsContentProvider : ContentProvider() {
+
+    @InstallIn(ApplicationComponent::class)
+    @EntryPoint
+    interface LogsContentProviderEntryPoint {
+        fun logDao(): LogDao
+    }
 
     private val matcher: UriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
         addURI(AUTHORITY, LOGS_TABLE, CODE_LOGS_DIR)
@@ -33,6 +40,14 @@ class LogsContentProvider: ContentProvider() {
 
     override fun onCreate(): Boolean {
         return true
+    }
+
+    private fun getLogDao(appContext: Context): LogDao {
+        val hiltEntryPoint = EntryPointAccessors.fromApplication(
+            appContext,
+            LogsContentProviderEntryPoint::class.java
+        )
+        return hiltEntryPoint.logDao()
     }
 
     /**
