@@ -1,6 +1,5 @@
 package com.example.android.hilt.data
 
-import dagger.hilt.android.scopes.ActivityScoped
 import java.util.*
 import javax.inject.Inject
 
